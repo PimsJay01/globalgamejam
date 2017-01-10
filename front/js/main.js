@@ -1,19 +1,18 @@
-requirejs(['jquery', 'phaser', 'js/preload', 'js/create', 'js/update'], function($, p, preload, create, update) {
+requirejs(['jquery', 'phaser', 'js/states/menu', 'js/states/game'], function($, p, menuState, gameState) {
 
     var game;
 
     // Document ready
     $(function() {
-        game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
-            'preload': function() {
-                preload.init(game);
-            },
-            'create': function() {
-                create.init(game);
-            },
-            'update': function() {
-                update.init(game);
-            }
-        });
+
+        // Init game with Phaser
+        game = new Phaser.Game(800, 600, Phaser.AUTO, '');
+
+        // Declare states
+        game.state.add('menu', menuState.init(game));
+        game.state.add('game', gameState.init(game));
+
+        // Start state
+        game.state.start('menu');
     });
 });
