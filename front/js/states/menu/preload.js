@@ -1,8 +1,11 @@
-define(['js/res'], function(res) {
+define(['js/phaser', 'js/res'], function(phaser, res) {
 
-    function init(game) {
+    var game;
 
-        game.load.image('sprites.background', res.sprites.background);
+    return function() {
+        game = phaser.getGame();
+
+        game.stage.backgroundColor = '#3598db';
 
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -10,10 +13,5 @@ define(['js/res'], function(res) {
         game.scale.pageAlignVertically = true;
 
         game.load.image('buttons.play', res.buttons.play);
-
-    }
-
-    return {
-        'init': init
     }
 });

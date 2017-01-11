@@ -1,12 +1,10 @@
-define([], function() {
+define(['js/phaser'], function(phaser) {
 
-    function init(game) {
+    var game;
+
+    return function() {
+        game = phaser.getGame();
 
         game.add.sprite(0, 0, 'background');
-
-    }
-
-    return {
-        'init': init
     }
 });

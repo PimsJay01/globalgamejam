@@ -1,6 +1,9 @@
-define(['js/res'], function(res) {
+define(['js/phaser', 'js/res'], function(phaser, res) {
 
-    function init(game) {
+    var game;
+
+    return function() {
+        game = phaser.getGame();
 
         game.load.image('background', res.sprites.background);
 
@@ -11,9 +14,5 @@ define(['js/res'], function(res) {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    }
-
-    return {
-        'init': init
     }
 });
