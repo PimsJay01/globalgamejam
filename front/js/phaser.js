@@ -2,10 +2,10 @@ define(['phaser'], function() {
 
     var game;
 
-    function init() {
+    function init(properties) {
 
         // Init game with Phaser
-        game = new Phaser.Game(800, 600, Phaser.AUTO, '');
+        game = new Phaser.Game(properties.width, properties.height, Phaser.AUTO, '');
 
         return game;
     }

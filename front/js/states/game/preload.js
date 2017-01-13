@@ -1,11 +1,14 @@
-define(['js/phaser', 'js/res'], function(phaser, res) {
+define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others'], function(phaser, res, player, others) {
 
     var game;
 
     return function() {
         game = phaser.getGame();
 
-        game.load.image('background', res.sprites.background);
+        game.load.image('sprites.background', res.sprites.background);
+
+        player.preload();
+        others.preload();
 
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -14,5 +17,11 @@ define(['js/phaser', 'js/res'], function(phaser, res) {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        game.controls = {
+            up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+            left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+            down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
     }
 });

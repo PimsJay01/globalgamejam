@@ -2,27 +2,38 @@ var http = require('http');
 
 var server = http.createServer();
 
+var game = {
+    'width': 800,
+    'height': 600
+}
+
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
 
-io.sockets.on('connection', function (socket, pseudo) {
+io.sockets.on('connection', function (socket) {
 
-    // Quand un client se connecte, on lui envoie un message
-    socket.emit('message', 'Vous êtes bien connecté !');
+    console.info('new connection');
 
-    // On signale aux autres clients qu'il y a un nouveau venu
-    socket.broadcast.emit('message', 'Un autre client vient de se connecter ! ');
+    socket.emit('id', socket.id);
+    socket.emit('init', game);
 
-    // Dès qu'on nous donne un pseudo, on le stocke en variable de session
-    socket.on('petit_nouveau', function(pseudo) {
-        socket.pseudo = pseudo;
+    socket.on('start', function () {
+        socket.emit('pop', {
+            'x': Math.random() * (game.width - 16),
+            'y': Math.random() * (game.height - 16)
+        });
     });
 
-    // Dès qu'on reçoit un "message" (clic sur le bouton), on le note dans la console
-    socket.on('message', function (message) {
-        // On récupère le pseudo de celui qui a cliqué dans les variables de session
-        console.log(socket.pseudo + ' me parle ! Il me dit : ' + message);
+    socket.on('position', function(position) {
+        socket.broadcast.emit('update', {
+            'id': socket.id,
+            'x': position.x,
+            'y': position.y
+        });
+        console.log(position);
     });
 });
 
 server.listen(7777);
+
+console.info('server started');
