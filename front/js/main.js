@@ -2,7 +2,6 @@ requirejs(['jquery', 'js/phaser'], function($, phaser) {
 
     var game;
 
-    // Document ready
     $(function() {
         require(['js/socket'], function(socket) {
             socket.on('init', function(init) {

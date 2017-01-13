@@ -104,7 +104,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
         }
 
         if(!$.isEmptyObject(valuesToSend)) {
-            socket.emit('position', valuesToSend);
+            socket.emit('update', valuesToSend);
         }
 
         oldValues = {

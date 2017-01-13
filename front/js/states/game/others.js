@@ -3,7 +3,7 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
     var game;
     var others = {};
 
-    socket.on('update', function(update) {
+    socket.on('broadcast', function(update) {
         if(update.id != socket.id) {
             if(others[socket.id] === undefined) {
                 others[socket.id] = game.add.sprite(0, 0, 'sprites.characters');

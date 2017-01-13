@@ -14,7 +14,7 @@ io.sockets.on('connection', function (socket) {
 
     console.info('new connection');
 
-    socket.emit('id', socket.id);
+    socket.emit('session', socket.id);
     socket.emit('init', game);
 
     socket.on('start', function () {
@@ -24,13 +24,10 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('position', function(position) {
-        socket.broadcast.emit('update', {
-            'id': socket.id,
-            'x': position.x,
-            'y': position.y
-        });
-        console.log(position);
+    socket.on('update', function(update) {
+        update.id = socket.id;
+        socket.broadcast.emit('broadcast', update);
+        console.log(update);
     });
 });
 
