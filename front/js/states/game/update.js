@@ -1,4 +1,4 @@
-define(['js/phaser', 'js/states/game/player'], function(phaser, player) {
+define(['js/phaser', 'js/states/game/player', 'js/states/game/others'], function(phaser, player, others) {
 
     var game;
 
@@ -6,5 +6,6 @@ define(['js/phaser', 'js/states/game/player'], function(phaser, player) {
         game = phaser.getGame();
 
         player.update();
+        others.update();
     }
 });
