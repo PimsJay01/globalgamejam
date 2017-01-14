@@ -39,7 +39,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
         player.visible = false;
 
         socket.emit('start');
-        console.log(player);
+        console.info('Player', player);
 
         oldValues = {
             'x': utils.round(player.position.x, 1),

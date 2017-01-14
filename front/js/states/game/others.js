@@ -4,7 +4,8 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
     var others = [];
 
     socket.on('broadcast', function(update) {
-        if(game !== void 0) {
+        console.log(update);
+        if((game !== void 0) && (game.state.current === 'game')) {
             if(others[update.id] === void 0) {
                 others[update.id] = game.add.sprite(0, 0, 'sprites.characters');
 
