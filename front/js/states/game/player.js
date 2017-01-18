@@ -5,7 +5,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
 
     var oldValues;
 
-    socket.on('pop', function(position) {
+    socket.on('spawn', function(position) {
         player.position.x = position.x;
         player.position.y = position.y;
 

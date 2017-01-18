@@ -22,7 +22,7 @@ io.sockets.on('connection', function (socket) {
     // When client start game...
     socket.on('start', function () {
 
-        // Add new client in array
+        // Add new client in object
         clients[socket.id] = {
             'id': socket.id,
             'x': Math.random() * (game.width - 16),
@@ -32,7 +32,7 @@ io.sockets.on('connection', function (socket) {
         }
 
         // Server choose random starting position
-        socket.emit('pop', {
+        socket.emit('spawn', {
             'x': clients[socket.id].x,
             'y': clients[socket.id].y
         });
