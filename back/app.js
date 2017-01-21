@@ -2,8 +2,6 @@ var http = require('http');
 
 var server = http.createServer();
 
-
-
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
 
@@ -19,11 +17,50 @@ const game = {
   'width': 40,
   'height': 40
 }
+
+function makeShapes(){
+  return {
+    1 : { 'id':1, 'blocks' : {
+      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
+      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+     }},
+    2 : { 'id':2, 'blocks' : {
+      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
+      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+     }},
+    3 : { 'id':3, 'blocks' : {
+      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
+      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+     }}
+  };
+}
+
+// list of clients
 var clients = {};
+var blocks = {
+  1 : {'id':1, 'x':0.2, 'y':0.2},
+  2 : {'id':2, 'x':0.7, 'y':0.5},
+  3 : {'id':3, 'x':0.7, 'y':0.7},
+ };
+
+ // list of shapes
+ var shapes = makeShapes();
 
 // reset the global datastructures, put the server in initial state
 function reset(){
   clients = {};
+  blocks = {
+    1 : {'id':1, 'x':0.2, 'y':0.2},
+    2 : {'id':2, 'x':0.7, 'y':0.5},
+    3 : {'id':3, 'x':0.7, 'y':0.7},
+   };
+   shapes = makeShapes();
   console.log('Server reset');
 };
 
@@ -71,6 +108,11 @@ io.sockets.on('connection', function (socket) {
       'y': clients[socket.id].y
     });
 
+    console.log("Sending block list to client "+socket.id);
+    socket.emit('blocklist', blocks);
+
+    socket.emit('shapelist', shapes);
+
     console.log("Sending data of client "+socket.id+" to all other clients");
     Object.keys(clients).forEach(function(key) {
       if(clients[key].id != socket.id) {
@@ -89,10 +131,24 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id].vx = update.vx !== void 0 ? update.vx : clients[socket.id].vx;
     clients[socket.id].vy = update.vy !== void 0 ? update.vy : clients[socket.id].vy;
     clients[socket.id].animationName = update.animationName !== void 0 ? update.animationName : clients[socket.id].animationName;
-    console.info('Server received data from client '+update.id+'. x : ' + clients[update.id].x +', y : '+clients[update.id].y+', vx : ' + clients[update.id].vx +', vy : '+clients[update.id].vy+', animation name : '+clients[update.id].animationName)
-    console.info('Broadcasting the data : '+update.id+'. x : ' + update.x +', y : '+update.y+', vx : ' + update.vx +', vy : '+update.vy+', animation name : '+update.animationName);
-    console.log("List of clients : "+Object.keys(clients));
+    console.info('Server received data character from client '+update.id+'. x : ' + clients[update.id].x +', y : '+clients[update.id].y+', vx : ' + clients[update.id].vx +', vy : '+clients[update.id].vy+', animation name : '+clients[update.id].animationName)
+    console.info('Broadcasting the character data : '+update.id+'. x : ' + update.x +', y : '+update.y+', vx : ' + update.vx +', vy : '+update.vy+', animation name : '+update.animationName);
+    // console.log("List of clients : "+Object.keys(clients));
     socket.broadcast.emit('broadcast', update);
+  });
+
+  socket.on('updateblock', function(update) {
+    blocks[update.id].x = update.x !== void 0 ? update.x : blocks[socket.id].x;
+    blocks[update.id].y = update.y !== void 0 ? update.y : blocks[socket.id].y;
+    console.info('Server received block data. x : ' + blocks[update.id].x +', y : '+blocks[update.id].y+', id : ' + blocks[update.id].id);
+    console.info('Broadcasting the block data. x : ' + blocks.x +', y : '+blocks.y+', id : ' + blocks.id);
+    // console.log("List of clients : "+Object.keys(clients));
+    socket.broadcast.emit('broadcastblock', update);
+  });
+
+  socket.on('updateshape', function(update) {
+    console.info('updating shape');
+    socket.broadcast.emit(update);
   });
 
   // When client disconnect...
