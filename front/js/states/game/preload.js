@@ -5,7 +5,8 @@ define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others',
     return function() {
         game = phaser.getGame();
 
-        game.load.image('sprites.background', res.sprites.background);
+        // game.load.image('sprites.background', res.sprites.background);
+        game.stage.backgroundColor = "#B5F3E9";
 
         player.preload();
         others.preload();

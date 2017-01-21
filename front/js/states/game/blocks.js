@@ -36,23 +36,23 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
   function update() {
     for (var i in blockList) {
-      // game.physics.arcade.collide(player.getPlayer(), blockList[i].sprite, updateServerPos, null, { this: this, block: blockList[i] });
-      game.physics.arcade.collide(player.getPlayer(), blockList[i], updateServerPos, null);
-      // game.physics.arcade.collide(player.getPlayer(), blockList[i], updateServerPos, null, { this: this, block: blockList[i] });
 
-      blockList[i].body.velocity.setTo(0, 0);
+      game.physics.arcade.collide(player.getPlayer(), blockList[i]);
+
+      if(blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0){
+        var valuesToSend = {};
+        valuesToSend.id = blockList[i].id;
+        valuesToSend.x = blockList[i].x / phaser.getGame().width;
+        valuesToSend.y = blockList[i].y / phaser.getGame().width;
+        socket.emit('updateblock', valuesToSend);
+      }
+
+      if ((Math.round(blockList[i].body.position.x) % 100 === 0) && (Math.round(blockList[i].body.position.y) % 100 === 0))
+        blockList[i].body.velocity.setTo(0, 0);
+
     }
   }
 
-  function updateServerPos(player, block){
-    // console.info(block);
-    // console.info("block pos :" + block.x + ", " + block.y + " block id : " + block.id);
-    var valuesToSend = {};
-    valuesToSend.id = block.id;
-    valuesToSend.x = block.x / phaser.getGame().width;
-    valuesToSend.y = block.y / phaser.getGame().width;
-    socket.emit('updateblock', valuesToSend);
-  }
 
   return {
       'preload': preload,
