@@ -89,8 +89,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             var valuesToSend = {};
             valuesToSend.x = player.position.x / phaser.getGame().width;
             valuesToSend.y = player.position.y / phaser.getGame().height;
-            valuesToSend.vx = Math.max(Math.min(player.body.velocity.x, -1),1);
-            valuesToSend.vy = Math.max(Math.min(player.body.velocity.y, -1),1);
+            valuesToSend.vx = Math.min(Math.max(player.body.velocity.x, -1),1);
+            valuesToSend.vy = Math.min(Math.max(player.body.velocity.y, -1),1);
             valuesToSend.animationName = player.animations.currentAnim.name;
             socket.emit('update', valuesToSend);
         }
