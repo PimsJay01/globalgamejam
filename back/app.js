@@ -2,9 +2,9 @@ var http = require('http');
 
 var server = http.createServer();
 
-// Chargement de socket.io
+// Loading socket.io
 var io = require('socket.io').listen(server);
-
+// Loading stdin read
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -12,48 +12,59 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-
+// global datastructures
 var clients = {};
 var votes = {};
 var numVotes = 0;
+var currentRoom = 0;
+var rooms = [
+  {choices : {"Red door":"live", "Blue door":"die", "Green door":"die", "Yellow door":"live"},
+}
+];
 
-// var reset = function(){
-//   clients = {};
-//   votes = {};
-//   numVotes = 0;
-//   console.log('Server reset');
-// };
-
-// var serverCommands = {'reset' : function(){
-//   clients = {};
-//   votes = {};
-//   numVotes = 0;
-//   console.log('Server reset');
-// }
-// };
-
-rl.on('line', (input) => {
-  console.log(`Command : ${input}`);
-  // serverCommands['${input}']();
+// reset the global datastructures, put the server in initial state
+function reset(){
   clients = {};
   votes = {};
   numVotes = 0;
   console.log('Server reset');
+};
+
+// list of commands recognised by the server
+var serverCommands = {'reset' : reset
+};
+
+// read and manage commands from stdin
+rl.on('line', (input) => {
+  var command = input.trim();
+  console.log(`Command : `+ command);
+  if(command in serverCommands){
+    serverCommands[command]();
+  } else {
+    console.log(`Unknown command : `+ command);
+  }
 });
 
 io.sockets.on('connection', function (socket) {
 
+  // registering new client
   console.info('new connection id ' + socket.id);
   clients[socket.id] = {
+    'connection' : socket,
     'id': socket.id,
     'hasVoted': false,
     'vote' : undefined
   }
 
+  // response to hello message from client
   socket.on('hello', function(message) {
-    console.info('The client ' + socket.id + ' sent me the message  : ' + message);
+    console.info('The client ' + socket.id + ' sent me the message  : ' + message + ', sending him the first room');
+    console.info('Choices are ' + Object.keys(rooms[0]));
+    socket.emit('room', Object.keys(rooms[0]));
   })
 
+  // response to vote command from client
+  // count the vote, if all votes received respond
   socket.on('vote', function(vote) {
 
     console.info('The client ' +socket.id+ ' has voted : ' + vote);
@@ -85,8 +96,13 @@ io.sockets.on('connection', function (socket) {
           winvote = key;
         }
       }
+      for(key in clients){
+        clients[key].hasVoted = false;
+        clients[key].vote = undefined;
+      }
       console.info('max is '+max+'The winning choice is : ' + winvote)
-      socket.emit('winvote', winvote);
+      io.emit('winvote', winvote);
+      console.info('Everybody ' + );
       votes = {};
       numVotes = 0;
 
