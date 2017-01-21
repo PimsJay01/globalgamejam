@@ -2,7 +2,6 @@ define(['js/phaser', 'js/states/game/player'], function(phaser, player) {
 
     var game;
     var map;
-    var layer;
 
     return function() {
         game = phaser.getGame();
@@ -12,8 +11,9 @@ define(['js/phaser', 'js/states/game/player'], function(phaser, player) {
         // Tilemap materials
         map = game.add.tilemap('mario');
         map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
-        layer = map.createLayer('World1');
-        layer.resizeWorld();
+        game.layer = map.createLayer('World1');
+        map.setCollision([21, 22, 27, 28, 40], true, game.layer);
+        game.layer.resizeWorld();
 
         player.create();
     }

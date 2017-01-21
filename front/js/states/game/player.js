@@ -50,7 +50,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
     }
 
     function update() {
-
+        game.physics.arcade.collide(player, game.layer);
         if(player.visible) {
             // Up
             if (game.controls.up.isDown) {
