@@ -1,8 +1,7 @@
-define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
+define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(phaser, socket, res, player) {
 
-  blockList = {};
+  blockList = [];
   var game;
-
   function preload() {
       game = phaser.getGame();
 
@@ -15,18 +14,26 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
     game.load.image('block', res.sprites.block);
     console.log(res.sprites.block);
     for (var i in blocks) {
-      blockList[blocks[i].id] =  game.add.sprite(blocks[i].x * phaser.getGame().width , blocks[i].y * phaser.getGame().height , 'block');
+      var tempBlock = game.add.sprite(blocks[i].x * phaser.getGame().width , blocks[i].y * phaser.getGame().height , 'block');
+
+      game.physics.arcade.enable(tempBlock);
+      tempBlock.body.collideWorldBounds = true;
+      tempBlock.body.bounce.set(0);
+
+      blockList.push(tempBlock);
     }
-
-
-
-
-
+    console.info("Block list", blockList);
   });
 
-  return {
-      'preload': preload
+  function update() {
+    for (var i in blockList) {
+      game.physics.arcade.collide(player.getPlayer(), blockList[i]);
+      blockList[i].body.velocity.setTo(0, 0);
+    }
   }
 
-
+  return {
+      'preload': preload,
+      'update': update
+  }
 });
