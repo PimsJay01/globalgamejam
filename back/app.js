@@ -2,64 +2,98 @@ var http = require('http');
 
 var server = http.createServer();
 
-var game = {
-    'width': 800,
-    'height': 600
-}
-
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
 
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+
 var clients = {};
+var votes = {};
+var numVotes = 0;
+
+// var reset = function(){
+//   clients = {};
+//   votes = {};
+//   numVotes = 0;
+//   console.log('Server reset');
+// };
+
+// var serverCommands = {'reset' : function(){
+//   clients = {};
+//   votes = {};
+//   numVotes = 0;
+//   console.log('Server reset');
+// }
+// };
+
+rl.on('line', (input) => {
+  console.log(`Command : ${input}`);
+  // serverCommands['${input}']();
+  clients = {};
+  votes = {};
+  numVotes = 0;
+  console.log('Server reset');
+});
+
 io.sockets.on('connection', function (socket) {
 
-    console.info('new connection id ' + socket.id);
+  console.info('new connection id ' + socket.id);
+  clients[socket.id] = {
+    'id': socket.id,
+    'hasVoted': false,
+    'vote' : undefined
+  }
 
-    // Send id client and game preferences
-    socket.emit('session', socket.id);
-    socket.emit('init', game);
+  socket.on('hello', function(message) {
+    console.info('The client ' + socket.id + ' sent me the message  : ' + message);
+  })
 
-    // When client start game...
-    socket.on('start', function () {
+  socket.on('vote', function(vote) {
 
-        // Add new client in object
-        clients[socket.id] = {
-            'id': socket.id,
-            'x': Math.random() * (game.width - 16),
-            'y': Math.random() * (game.height - 16),
-            'isPlaying': false,
-            'animationName': 'down'
+    console.info('The client ' +socket.id+ ' has voted : ' + vote);
+    if( !clients[socket.id].hasVoted ){
+      clients[socket.id].hasVoted = true;
+      clients[socket.id].vote = vote;
+      numVotes++;
+      console.info('His vote has been registered');
+    } else{
+      console.info('He had already voted')
+    }
+
+    if(numVotes === Object.keys(clients).length){
+      console.info('Everybody voted, counting the votes ...')
+      for (key in clients) {
+        if(!(clients[key].vote in votes)){
+          votes[clients[key].vote]++;
         }
+        else{
+          votes[clients[key].vote]=1;
+        }
+      }
 
-        // Server choose random starting position
-        socket.emit('spawn', {
-            'x': clients[socket.id].x,
-            'y': clients[socket.id].y
-        });
+      var max = 0;
+      var winvote = "";
+      for (key in votes){
+        if(votes[key] > max){
+          max = votes[key];
+          winvote = key;
+        }
+      }
+      console.info('The winning choice is : ' + winvote)
+      socket.emit('winvote', winvote);
+      votes = {};
+      numVotes = 0;
 
-        Object.keys(clients).forEach(function(key) {
-            if(clients[key].id != socket.id) {
-                socket.emit('broadcast', clients[key]);
-            }
-        });
-    });
+    } else {console.info('Some votes are missing, total number of clients : ' + Object.keys(clients).length + ', total number of votes : ' + numVotes)}
 
-    // Receive update from player and broadcast it
-    socket.on('update', function(update) {
+  })
 
-        update.id = socket.id;
-        clients[socket.id].x = update.x !== void 0 ? update.x : clients[socket.id].x;
-        clients[socket.id].y = update.y !== void 0 ? update.y : clients[socket.id].y;
-        clients[socket.id].isPlaying = update.isPlaying !== void 0 ? update.isPlaying : clients[socket.id].isPlaying;
-        clients[socket.id].animationName = update.animationName !== void 0 ? update.animationName : clients[socket.id].animationName;
-
-        socket.broadcast.emit('broadcast', update);
-    });
-
-    // When client disconnect...
-    socket.on('disconnect', function() {
-        delete clients[socket.id];
-    });
 });
 
 server.listen(7777);
