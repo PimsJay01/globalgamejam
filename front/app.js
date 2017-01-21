@@ -12,4 +12,4 @@ requirejs.config({
 });
 
 // Start loading the main app file.
-requirejs(['js/main']);
+requirejs(['js/main0']);

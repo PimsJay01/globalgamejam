@@ -8,8 +8,15 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <meta charset="utf-8">
 
-        <!--<link rel="stylesheet" type="text/css" href="css/index.css">-->
-        <script type="text/javascript" src="http://localhost:7777/socket.io/socket.io.js"></script>
+
+        <!-- BOOTSTRAP -->
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <script type="text/javascript" src="http://192.168.150.44:7777/socket.io/socket.io.js"></script>
         <script type="text/javascript" data-main="app.js" src="lib/require/require.min.js"></script>
 
         <style>
@@ -19,5 +26,24 @@
             }
         </style>
     </head>
-    <body></body>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xm-2">
+                    <input id="myButton" type="button" value="dis bonjour"<input>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xm-12">
+                    <input id="voteButton1" type="button" value="Vote1"<input>
+                </div>
+                <div class="col-xm-12">
+                    <input id="voteButton2" type="button" value="Vote2"<input>
+                </div>
+                <div class="col-xm-12">
+                    <input id="voteButton3" type="button" value="Vote3"<input>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
