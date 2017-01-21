@@ -57,32 +57,41 @@ io.sockets.on('connection', function (socket) {
     // Add new client in object
     clients[socket.id] = {
       'id': socket.id,
-      'x': 20,
-      'y': 20,
-      'orientation' : 0,
+      'x': 0.5,
+      'y': 0.5,
+      'vx': 0,
+      'vy': 0,
       'animationName': 'down'
     }
 
-    // Server choose random starting position
+    // Server choose starting position
+    console.log("Sending position to client "+socket.id);
     socket.emit('spawn', {
       'x': clients[socket.id].x,
       'y': clients[socket.id].y
     });
 
+    console.log("Sending data of client "+socket.id+" to all other clients");
     Object.keys(clients).forEach(function(key) {
       if(clients[key].id != socket.id) {
         socket.emit('broadcast', clients[key]);
       }
     });
+
+    console.log("List of clients : "+Object.keys(clients));
   });
 
   // Receive update from player and broadcast it
   socket.on('update', function(update) {
     update.id = socket.id;
-    clients[socket.id].orientation = update.orientation !== void 0 ? update.orientation : clients[socket.id].orientation;
     clients[socket.id].x = update.x !== void 0 ? update.x : clients[socket.id].x;
     clients[socket.id].y = update.y !== void 0 ? update.y : clients[socket.id].y;
+    clients[socket.id].vx = update.vx !== void 0 ? update.vx : clients[socket.id].vx;
+    clients[socket.id].vy = update.vy !== void 0 ? update.vy : clients[socket.id].vy;
     clients[socket.id].animationName = update.animationName !== void 0 ? update.animationName : clients[socket.id].animationName;
+    console.info('Server received data from client '+update.id+'. x : ' + clients[update.id].x +', y : '+clients[update.id].y+', vx : ' + clients[update.id].vx +', vy : '+clients[update.id].vy+', animation name : '+clients[update.id].animationName)
+    console.info('Broadcasting the data : '+update.id+'. x : ' + update.x +', y : '+update.y+', vx : ' + update.vx +', vy : '+update.vy+', animation name : '+update.animationName);
+    console.log("List of clients : "+Object.keys(clients));
     socket.broadcast.emit('broadcast', update);
   });
 
