@@ -131,6 +131,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
     return {
         'create': create,
         'preload': preload,
-        'update': update
+        'update': update,
+        'getPlayer': function() { return player; }
     }
 });
