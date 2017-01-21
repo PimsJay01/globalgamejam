@@ -70,10 +70,10 @@ io.sockets.on('connection', function (socket) {
       console.info('Everybody voted, counting the votes ...')
       for (key in clients) {
         if(!(clients[key].vote in votes)){
-          votes[clients[key].vote]++;
+          votes[clients[key].vote]=1;
         }
         else{
-          votes[clients[key].vote]=1;
+          votes[clients[key].vote]++;
         }
       }
 
@@ -85,7 +85,7 @@ io.sockets.on('connection', function (socket) {
           winvote = key;
         }
       }
-      console.info('The winning choice is : ' + winvote)
+      console.info('max is '+max+'The winning choice is : ' + winvote)
       socket.emit('winvote', winvote);
       votes = {};
       numVotes = 0;
