@@ -2,6 +2,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
     var game;
     var others = {};
+    var velocity = 0.15 * phaser.getGame().width;
 
     socket.on('broadcast', function(update) {
         if((game !== void 0) && (game.state.current === 'game')) {
@@ -43,11 +44,12 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
 
             if(update.vx != void 0) {
-                others[update.id].body.velocity.x = update.vx * player.velocity;
+                console.log('tfug   '+ velocity);
+                others[update.id].body.velocity.x = update.vx * velocity;
             }
 
             if(update.vy != void 0) {
-                others[update.id].body.velocity.y = update.vy * player.velocity;
+                others[update.id].body.velocity.y = update.vy * velocity;
             }
             console.log(others);
 
