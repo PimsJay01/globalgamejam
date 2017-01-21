@@ -8,7 +8,7 @@ define(function() {
             'background': sprites + 'sky.jpg',
             'characters': sprites + 'characters.png',
             'hero': sprites + 'bunny.png',
-            'block': sprites + 'carreblanc.jpg'
+            'block': sprites + 'bloc.png'
         },
         'buttons': {
             'play': buttons + 'play.png'
