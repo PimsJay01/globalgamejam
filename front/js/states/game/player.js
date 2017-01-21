@@ -2,6 +2,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
 
     var game;
     var player;
+    var velocity = 0.15 * phaser.getGame().width;
 
 
     socket.on('spawn', function(position) {
@@ -55,24 +56,24 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             // Up
             if (game.controls.up.isDown) {
                 player.body.velocity.x = 0;
-                player.body.velocity.y = -125;
+                player.body.velocity.y = -velocity;
                 player.animations.play('up');
 
             // Down
             } else if (game.controls.down.isDown) {
                 player.body.velocity.x = 0;
-                player.body.velocity.y = player.speed;
+                player.body.velocity.y = velocity;
                 player.animations.play('down');
 
             // Left
             } else if (game.controls.left.isDown) {
-                player.body.velocity.x = -player.speed;
+                player.body.velocity.x = -velocity;
                 player.body.velocity.y = 0;
                 player.animations.play('left');
 
             // Right
             } else if (game.controls.right.isDown) {
-                player.body.velocity.x = player.speed;
+                player.body.velocity.x = velocity;
                 player.body.velocity.y = 0;
                 player.animations.play('right');
             // }
@@ -88,8 +89,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             var valuesToSend = {};
             valuesToSend.x = player.position.x / phaser.getGame().width;
             valuesToSend.y = player.position.y / phaser.getGame().height;
-            valuesToSend.vx = player.body.velocity.x;
-            valuesToSend.vy = player.body.velocity.y;
+            valuesToSend.vx = ((player.body.velocity.x > 0 ) ? 1 : -1);
+            valuesToSend.vy = ((player.body.velocity.y > 0 ) ? 1 : -1);
             valuesToSend.animationName = player.animations.currentAnim.name;
             socket.emit('update', valuesToSend);
         }

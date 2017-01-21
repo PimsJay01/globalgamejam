@@ -1,4 +1,4 @@
-define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
+define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(phaser, socket, res) {
 
     var game;
     var others = {};
@@ -43,11 +43,11 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
 
 
             if(update.vx != void 0) {
-                others[update.id].body.velocity.x = update.vx;
+                others[update.id].body.velocity.x = update.vx * player.velocity;
             }
 
             if(update.vy != void 0) {
-                others[update.id].body.velocity.y = update.vy;
+                others[update.id].body.velocity.y = update.vy * player.velocity;
             }
             console.log(others);
 
