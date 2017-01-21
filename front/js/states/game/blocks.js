@@ -56,9 +56,13 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
     }
   }
 
+  function getBlocks() {
+      return blockList;
+  }
 
   return {
       'preload': preload,
-      'update': update
+      'update': update,
+      'getBlocks': getBlocks
   }
 });

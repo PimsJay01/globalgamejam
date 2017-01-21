@@ -1,7 +1,8 @@
 define([], function() {
 
     //var socket = io.connect('http://poisot.eu:7777');
-    var socket = io.connect('http://192.168.43.92:7777');
+    // var socket = io.connect('http://192.168.43.92:7777');
+    var socket = io.connect('http://localhost:7777');
     var id;
 
     socket.on('session', function(_id) {

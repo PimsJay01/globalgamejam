@@ -1,4 +1,5 @@
-define(['js/phaser', 'js/states/game/player', 'js/states/game/others', 'js/states/game/blocks'], function(phaser, player, others, blocks) {
+define(['js/phaser', 'js/states/game/player', 'js/states/game/others', 'js/states/game/blocks', 'js/states/game/enemies'],
+function(phaser, player, others, blocks, enemies) {
 
     var game;
 
@@ -8,5 +9,6 @@ define(['js/phaser', 'js/states/game/player', 'js/states/game/others', 'js/state
         player.update();
         others.update();
         blocks.update();
+        enemies.update();
     }
 });
