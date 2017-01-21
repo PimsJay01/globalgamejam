@@ -16,8 +16,8 @@ const rl = readline.createInterface({
 });
 
 const game = {
-  'width': 40,
-  'height': 40
+  'width': 800,
+  'height': 600
 }
 var clients = {};
 
