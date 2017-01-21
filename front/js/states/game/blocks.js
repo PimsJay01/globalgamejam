@@ -28,7 +28,9 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
   function update() {
     for (var i in blockList) {
       game.physics.arcade.collide(player.getPlayer(), blockList[i]);
-      blockList[i].body.velocity.setTo(0, 0);
+      console.log(blockList[i].body.position);
+      if ((Math.round(blockList[i].body.position.x) % 100 === 0) && (Math.round(blockList[i].body.position.y) % 100 === 0))
+        blockList[i].body.velocity.setTo(0, 0);
     }
   }
 
