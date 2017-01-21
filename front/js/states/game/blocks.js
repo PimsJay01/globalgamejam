@@ -40,18 +40,32 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
       game.physics.arcade.collide(player.getPlayer(), blockList[i]);
 
       if(blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0){
+        console.info('block x : ' + blockList[i].x + ' y : ' + blockList[i].y);
         var valuesToSend = {};
         valuesToSend.id = blockList[i].id;
         valuesToSend.x = blockList[i].x / phaser.getGame().width;
         valuesToSend.y = blockList[i].y / phaser.getGame().width;
         socket.emit('updateblock', valuesToSend);
+
+        if(blockList[i].body.velocity.x != 0){
+
+        if ((Math.round(blockList[i].body.position.x) % 32 < 2))
+          blockList[i].body.velocity.setTo(0, 0);
+        }
+
+        if(blockList[i].body.velocity.y != 0){
+          if ( (Math.round(blockList[i].body.position.y) % 32 < 2))
+            blockList[i].body.velocity.setTo(0, 0);
+        }
+
+
       }
 
       for (var j in blockList) {
         game.physics.arcade.collide(blockList[j], blockList[i]);
       }
-      if ((Math.round(blockList[i].body.position.x) % 32 === 0) && (Math.round(blockList[i].body.position.y) % 32 === 0))
-        blockList[i].body.velocity.setTo(0, 0);
+
+
 
     }
   }
