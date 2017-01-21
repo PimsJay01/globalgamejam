@@ -4,6 +4,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
     var player;
     var velocity = 0.15 * phaser.getGame().width;
 
+    var oldPlayerx;
+    var oldPlayery;
 
     socket.on('spawn', function(position) {
         player.position.x = position.x * phaser.getGame().width;
@@ -49,8 +51,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
         // player.body.velocity.y = -player.speed;
         //
         // console.log(player);
-        var oldPlayerVelocityx = player.body.velocity.x;
-        var oldPlayerVelocityy = player.body.velocity.y;
+
 
         if(player.visible) {
             // Up
@@ -85,7 +86,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             }
         }
 
-        if (oldPlayerVelocityx != player.body.velocity.x || oldPlayerVelocityy != player.body.velocity.y){
+        if (oldPlayerx != player.position.x || oldPlayery != player.position.y){
             var valuesToSend = {};
             valuesToSend.x = player.position.x / phaser.getGame().width;
             valuesToSend.y = player.position.y / phaser.getGame().height;
@@ -95,7 +96,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             socket.emit('update', valuesToSend);
         }
 
-
+        oldPlayerx = player.position.x;
+        oldPlayery = player.position.y;
 
         // if(oldValues.x != utils.round(player.position.x, 1)) {
         //     valuesToSend.x = utils.round(player.position.x, 1);
