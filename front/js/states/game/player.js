@@ -3,11 +3,10 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
     var game;
     var player;
 
-    var oldValues;
 
     socket.on('spawn', function(position) {
-        player.position.x = position.x;
-        player.position.y = position.y;
+        player.position.x = position.x * phaser.getGame().width;
+        player.position.y = position.y * phaser.getGame().height;
 
         player.visible = true;
     });
@@ -41,21 +40,22 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
         socket.emit('start');
         console.info('Player', player);
 
-        oldValues = {
-            'x': utils.round(player.position.x, 1),
-            'y': utils.round(player.position.y, 1),
-            'isPlaying': player.animations.currentAnim.isPlaying,
-            'name': player.animations.currentAnim.name,
-        };
     }
 
     function update() {
+        // console.log('update');
+        // player.body.velocity.x = 0;
+        // player.body.velocity.y = -player.speed;
+        //
+        // console.log(player);
+        var oldPlayerVelocityx = player.body.velocity.x;
+        var oldPlayerVelocityy = player.body.velocity.y;
 
         if(player.visible) {
             // Up
             if (game.controls.up.isDown) {
                 player.body.velocity.x = 0;
-                player.body.velocity.y = -player.speed;
+                player.body.velocity.y = -125;
                 player.animations.play('up');
 
             // Down
@@ -75,7 +75,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
                 player.body.velocity.x = player.speed;
                 player.body.velocity.y = 0;
                 player.animations.play('right');
-
+            // }
             // Still
             } else {
                 player.animations.stop();
@@ -84,35 +84,45 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/utils'], function(phaser, socket
             }
         }
 
-        var valuesToSend = {};
-
-        if(oldValues.x != utils.round(player.position.x, 1)) {
-            valuesToSend.x = utils.round(player.position.x, 1);
-        }
-
-        if(oldValues.y != utils.round(player.position.y, 1)) {
-            valuesToSend.y = utils.round(player.position.y, 1);
-        }
-
-        if(oldValues.name != player.animations.currentAnim.name) {
-            valuesToSend.name = player.animations.currentAnim.name;
-        }
-
-        if(oldValues.isPlaying != player.animations.currentAnim.isPlaying) {
-            valuesToSend.isPlaying = player.animations.currentAnim.isPlaying;
-            valuesToSend.name = player.animations.currentAnim.name;
-        }
-
-        if(!$.isEmptyObject(valuesToSend)) {
+        if (oldPlayerVelocityx != player.body.velocity.x || oldPlayerVelocityy != player.body.velocity.y){
+            var valuesToSend = {};
+            valuesToSend.x = player.position.x / phaser.getGame().width;
+            valuesToSend.y = player.position.y / phaser.getGame().height;
+            valuesToSend.vx = player.body.velocity.x;
+            valuesToSend.vy = player.body.velocity.y;
+            valuesToSend.animationName = player.animations.currentAnim.name;
             socket.emit('update', valuesToSend);
         }
 
-        oldValues = {
-            'x': utils.round(player.position.x, 1),
-            'y': utils.round(player.position.y, 1),
-            'isPlaying': player.animations.currentAnim.isPlaying,
-            'name': player.animations.currentAnim.name,
-        };
+
+
+        // if(oldValues.x != utils.round(player.position.x, 1)) {
+        //     valuesToSend.x = utils.round(player.position.x, 1);
+        // }
+        //
+        // if(oldValues.y != utils.round(player.position.y, 1)) {
+        //     valuesToSend.y = utils.round(player.position.y, 1);
+        // }
+        //
+        // if(oldValues.name != player.animations.currentAnim.name) {
+        //     valuesToSend.name = player.animations.currentAnim.name;
+        // }
+        //
+        // if(oldValues.isPlaying != player.animations.currentAnim.isPlaying) {
+        //     valuesToSend.isPlaying = player.animations.currentAnim.isPlaying;
+        //     valuesToSend.name = player.animations.currentAnim.name;
+        // }
+        //
+        // if(!$.isEmptyObject(valuesToSend)) {
+        //
+        // }
+        //
+        // oldValues = {
+        //     'x': utils.round(player.position.x, 1),
+        //     'y': utils.round(player.position.y, 1),
+        //     'isPlaying': player.animations.currentAnim.isPlaying,
+        //     'name': player.animations.currentAnim.name,
+        // };
     }
 
     return {

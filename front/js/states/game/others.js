@@ -1,12 +1,14 @@
 define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
 
     var game;
-    var others = [];
+    var others = {};
 
     socket.on('broadcast', function(update) {
-        console.log(update);
         if((game !== void 0) && (game.state.current === 'game')) {
+
+            console.log(update);
             if(others[update.id] === void 0) {
+
                 others[update.id] = game.add.sprite(0, 0, 'sprites.characters');
 
                 //  Our two animations, walking left and right.
@@ -17,33 +19,47 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
                 others[update.id].animations.play('down');
                 others[update.id].scale.setTo(2);
 
+                // others[update.id].body = {};
+                // others[update.id].body.velocity = {};
+
                 // Enable player physics;
+                game.physics.arcade.enable(others[update.id]);
                 // others[update.id].physics.arcade.enable(others[update.id]);
                 // others[update.id].body.collideWorldBounds = true
 
                 others[update.id].alive = true;
                 others[update.id].speed = 125;
+
+
             }
 
             if(update.x != void 0) {
-                others[update.id].position.x = update.x;
+                others[update.id].position.x = update.x * phaser.getGame().width;
             }
 
             if(update.y != void 0) {
-                others[update.id].position.y = update.y;
+                others[update.id].position.y = update.y * phaser.getGame().height;
             }
 
-            if(update.isPlaying != void 0) {
-                if(update.isPlaying) {
-                    others[update.id].animations.play(update.name);
+
+            if(update.vx != void 0) {
+                others[update.id].body.velocity.x = update.vx;
+            }
+
+            if(update.vy != void 0) {
+                others[update.id].body.velocity.y = update.vy;
+            }
+            console.log(others);
+
+
+            if(others[update.id].body.velocity.x != 0 || others[update.id].body.velocity.y != 0) {
+                    others[update.id].animations.play(update.animationName);
                     // others[update.id].body.velocity.x = 125;
                     // others[update.id].body.velocity.y = 125;
-                }
-                else {
+                }else {
                     others[update.id].animations.stop();
                     // others[update.id].body.velocity.x = 0;
                     // others[update.id].body.velocity.y = 0;
-                }
             }
 
             if(update.name != void 0) {
@@ -61,9 +77,7 @@ define(['js/phaser', 'js/socket', 'js/res'], function(phaser, socket, res) {
     }
 
     function update() {
-        // for (var other in others) {
-        //     console.log(other);
-        // }
+
     }
 
     return {
