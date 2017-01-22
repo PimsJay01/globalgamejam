@@ -20,8 +20,7 @@ function(phaser, socket, res, player, blocks) {
     function create() {
         game = phaser.getGame();
 
-        var style = { font: "20px Verdana", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-        text = game.add.bitmapText(500, 950, 'text_font', "Next wave in :", 34);
+        text = game.add.bitmapText(game.world.centerX, game.height - 50, 'text_font', "Next wave in :", 34);
         text.anchor.setTo(0.5, 0.5);
     }
 
