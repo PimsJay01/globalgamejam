@@ -18,8 +18,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
     socket.on('broadcast', function(update) {
         if((game !== void 0) && (game.state.current === 'game')) {
 
-            console.log(update);
             if(others[update.id] === void 0) {
+                console.info('New player', update);
 
                 others[update.id] = game.add.sprite(0, 0, 'sprites.characters');
 
@@ -37,7 +37,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
                 // Enable player physics;
                 game.physics.arcade.enable(others[update.id]);
                 // others[update.id].physics.arcade.enable(others[update.id]);
-                // others[update.id].body.collideWorldBounds = true
+                others[update.id].body.collideWorldBounds = true
 
                 others[update.id].alive = true;
                 others[update.id].speed = 125;
@@ -55,7 +55,6 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
 
             if(update.vx != void 0) {
-                console.log('tfug   '+ velocity);
                 others[update.id].body.velocity.x = update.vx * velocity;
             }
 

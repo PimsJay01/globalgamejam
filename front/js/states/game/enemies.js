@@ -27,6 +27,10 @@ function(phaser, socket, res, player, blocks) {
     socket.on('time', function(time) {
         if (typeof(text) !== 'undefined')
           text.text = "Next wave in : " + time;
+
+          if((emitter !== void 0 ) && (time > 0)) {
+              emitter.on = false;
+          }
     });
 
     socket.on('wave', function() {

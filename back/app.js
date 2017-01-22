@@ -18,40 +18,34 @@ const game = {
   'height': 40
 }
 
-function makeShapes(){
-  return {
-    0 : { 'id':0, 'blocks' : {
-      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
-      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-    }},
-    1 : { 'id':1, 'blocks' : {
-      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
-      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-    }},
-    2 : { 'id':2, 'blocks' : {
-      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
-      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-    }}
-  };
-}
-
 function makeBlocks(){
   return {
-    0 : {'id':0, 'x':18, 'y':18, 'alpha':1.0},
-    1 : {'id':1, 'x':18, 'y':22, 'alpha':1.0},
-    2 : {'id':2, 'x':22, 'y':18, 'alpha':1.0},
-    2 : {'id':2, 'x':22, 'y':22, 'alpha':1.0}
+      0 : {'id':0, 'family':0, 'x':24, 'y':18, 'alpha':1.0},
+      1 : {'id':1, 'family':0, 'x':24, 'y':19, 'alpha':1.0},
+      2 : {'id':2, 'family':0, 'x':24, 'y':20, 'alpha':1.0},
+      3 : {'id':3, 'family':0, 'x':24, 'y':21, 'alpha':1.0},
+      4 : {'id':4, 'family':1, 'x':7, 'y':7, 'alpha':1.0},
+      5 : {'id':5, 'family':1, 'x':7, 'y':8, 'alpha':1.0},
+      6 : {'id':6, 'family':1, 'x':7, 'y':9, 'alpha':1.0},
+      7 : {'id':7, 'family':1, 'x':7, 'y':10, 'alpha':1.0},
+      8 : {'id':8, 'family':2, 'x':18, 'y':24, 'alpha':1.0},
+      9 : {'id':9, 'family':2, 'x':19, 'y':24, 'alpha':1.0},
+      10 : {'id':10, 'family':2, 'x':20, 'y':24, 'alpha':1.0},
+      11 : {'id':11, 'family':2, 'x':20, 'y':25, 'alpha':1.0}
   };
 }
 
+// function makeBlocks(){
+//   return {
+//     0 : {'id':0, 'x':18, 'y':18, 'alpha':1.0},
+//     1 : {'id':1, 'x':18, 'y':22, 'alpha':1.0},
+//     2 : {'id':2, 'x':22, 'y':18, 'alpha':1.0},
+//     2 : {'id':2, 'x':22, 'y':22, 'alpha':1.0}
+//   };
+// }
 
-const waveInterval = 60;
+
+const waveInterval = 15;
 var nextWave = waveInterval;
 
 // list of clients
@@ -59,13 +53,13 @@ var clients = {};
 var blocks = makeBlocks();
 
 // list of shapes
-var shapes = makeShapes();
+// var shapes = makeShapes();
 
 // reset the global datastructures, put the server in initial state
 function reset(){
   clients = {};
   blocks = makeBlocks();
-  shapes = makeShapes();
+  // shapes = makeShapes();
   nextWave = waveInterval;
   console.log('Server reset');
 };

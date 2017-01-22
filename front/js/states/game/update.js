@@ -6,9 +6,8 @@ function(phaser, player, others, blocks, enemies) {
     return function() {
         game = phaser.getGame();
 
-        player.update();
+        player.update(blocks.update());
         others.update();
-        blocks.update();
         enemies.update();
     }
 });

@@ -1,13 +1,10 @@
 define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(phaser, socket, res, player) {
 
-
-  var shape;
-
-
-
   var game;
   var blockList = [];
+  // var shapeList = [];
 
+  var stopPlayer = false;
 
   function preload() {
     game = phaser.getGame();
@@ -28,14 +25,10 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
   });
 
   socket.on('blocklist', function(blocks) {
-
-    game.load.image('block', res.sprites.block);
-    console.log(res.sprites.block);
     for (var i in blocks) {
       var tempBlock = game.add.sprite(blocks[i].x * 32, blocks[i].y * 32, 'block');
       tempBlock.id = blocks[i].id;
-      // console.info('yo', tempBlock);
-      // var tempBlockHolder = {'sprite' : tempBlock, 'id':blocks[i].id};
+      tempBlock.family = blocks[i].family;
 
       game.physics.arcade.enable(tempBlock);
       tempBlock.body.collideWorldBounds = true;
@@ -45,34 +38,31 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
       blockList.push(tempBlock);
     }
     console.info("Block list", blockList);
-
-    shape = game.add.sprite(200, 200, null);
-
-    b1 = game.add.sprite(0 , 0 , 'block');
-    b1.id = 3;
-    b2 = game.add.sprite(33 , 0 , 'block');
-    b2.id = 4;
-    b3 = game.add.sprite(66 , 0 , 'block');
-    b3.id = 5;
-    b4 = game.add.sprite(99 , 0 , 'block');
-    b4.id = 6;
-
-    shape.addChild(b1);
-    shape.addChild(b2);
-    shape.addChild(b3);
-    shape.addChild(b4);
-
-    game.physics.arcade.enable(shape);
-    shape.body.collideWorldBounds = true;
-    shape.body.bounce.set(0);
-
-
   });
+
+  // socket.on('shapelist', function(shapes) {
+  //
+  //   for (var i in shapes) {
+  //       for (var j in shapes[i].blocks) {
+  //         var tempBlock = game.add.sprite(shapes[i].blocks[j].x * 32, shapes[i].blocks[j].y * 32, 'block');
+  //         tempBlock.id = shapes[i].blocks[j].id;
+  //         tempBlock.family = i;
+  //
+  //         game.physics.arcade.enable(tempBlock);
+  //         tempBlock.body.collideWorldBounds = true;
+  //         tempBlock.body.bounce.set(0);
+  //
+  //         // blockList.push(tempBlockHolder);
+  //         shapeList.push(tempBlock);
+  //       }
+  //   }
+  //   console.info("Shape list", blockList);
+  // });
 
   function update() {
 
     game.physics.arcade.overlap(player.getPlayer(), blockList, collidePlayer, null, this);
-    game.physics.arcade.collide(blockList, blockList, collideBlocks, null, this);
+    game.physics.arcade.overlap(blockList, blockList, collideBlocks, null, this);
 
     // game.physics.arcade.collide(player.getPlayer(), shape.children);
 
@@ -106,18 +96,20 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
   function collidePlayer(player, block) {
 
       if(block.body.touching.down) {
-          block.position.set(block.position.floor().x, block.position.floor().y -32);
+          moveBlocksOfShape(block.family, 0, -32);
       }
       else if(block.body.touching.up) {
-          block.position.set(block.position.floor().x, block.position.floor().y +32);
+          moveBlocksOfShape(block.family, 0, +32);
       }
       else if(block.body.touching.left) {
-          block.position.set(block.position.floor().x +32, block.position.floor().y);
+          moveBlocksOfShape(block.family, +32, 0);
       }
       else if(block.body.touching.right) {
-          block.position.set(block.position.floor().x -32, block.position.floor().y);
+          moveBlocksOfShape(block.family, -32, 0);
       }
+  }
 
+  function sendPosition(block) {
       socket.emit('updateblock', {
           'id': block.id,
           'x': block.x / 32,
@@ -125,10 +117,35 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
       });
   }
 
+  function moveBlocksOfShape(family, x, y) {
+      for (var i in blockList) {
+            console.log(family);
+          if((blockList[i].family == family) && (blockList[i].position.x == blockList[i].previousPosition.x) && (blockList[i].position.y == blockList[i].previousPosition.y)) {
+              blockList[i].position.set(blockList[i].position.floor().x +x, blockList[i].position.floor().y +y);
+              sendPosition(blockList[i]);
+          }
+      }
+  }
+
+  function moveBlocksOfShapeToPreviousPosition(family) {
+      for (var i in blockList) {
+          if(blockList[i].family == family) {
+              blockList[i].position.set(blockList[i].previousPosition.floor().x, blockList[i].previousPosition.floor().y);
+              sendPosition(blockList[i]);
+          }
+      }
+  }
+
   function collideBlocks(block1, block2) {
-    block1.body.velocity.set(0);
+      moveBlocksOfShapeToPreviousPosition(block1.family);
+      moveBlocksOfShapeToPreviousPosition(block2.family);
+
+    //   player.getPlayer().body.velocity.set(0);
+    //   player.getPlayer().body.velocity.set(player.getPlayer().body.velocity.x * 5, player.getPlayer().body.velocity.y * 5);
+    //   player.getPlayer().position.set(player.getPlayer().previousPosition.x, player.getPlayer().previousPosition.y)
+    // block1.body.velocity.set(0);
     //   block1.position.set(block1.previousPosition.floor().x, block1.previousPosition.floor().y);
-    block2.body.velocity.set(0);
+    // block2.body.velocity.set(0);
     //   block1.position.set(block2.previousPosition.floor().x, block2.previousPosition.floor().y);
   }
 
