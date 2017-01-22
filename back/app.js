@@ -99,7 +99,7 @@ io.sockets.on('connection', function (socket) {
 
     // Add new client in object
     clients[socket.id] = {
-      'socket': socket,
+      //'socket': socket,
       'id': socket.id,
       'x': 0.5,
       'y': 0.5,
@@ -118,7 +118,7 @@ io.sockets.on('connection', function (socket) {
     console.log("Sending block list to client "+socket.id);
     socket.emit('blocklist', blocks);
 
-    socket.emit('shapelist', shapes);
+    // socket.emit('shapelist', shapes);
 
     console.log("Sending data of client "+socket.id+" to all other clients");
     Object.keys(clients).forEach(function(key) {
@@ -166,7 +166,8 @@ io.sockets.on('connection', function (socket) {
 });
 
 setInterval(function(){
-  io.sockets.emit('time', nextWave);
+  // io.sockets.emit('time', nextWave);
+  io.emit('time', nextWave);
   console.info('Current time : ', nextWave);
   nextWave--;
   if(nextWave === -1){
@@ -176,8 +177,10 @@ setInterval(function(){
         // io.sockets.emit('wave');
         var clientId = Object.keys(clients)[0];
         console.info('!!! sending wave to : ' + clientId + ' !!!');
-        clients[clientId].socket.emit('wave');
+        // clients[clientId].socket.emit('wave');
         // io.clients[clientId].send('wave');
+        // sockets.broadcast.to(clientId).emit('wave');
+        io.emit('wave', clientId);
     } else {
       console.info('No client connected, cannot send wave');
     }

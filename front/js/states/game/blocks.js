@@ -17,8 +17,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
 
   socket.on('broadcastblock', function(block){
-    blockList[block.id].x = block.x * phaser.getGame().width;
-    blockList[block.id].y = block.y * phaser.getGame().height;
+    blockList[block.id].x = block.x * 32;
+    blockList[block.id].y = block.y * 32;
   });
 
   socket.on('blocklist', function(blocks) {
