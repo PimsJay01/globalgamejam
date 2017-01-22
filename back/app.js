@@ -104,7 +104,8 @@ io.sockets.on('connection', function (socket) {
       'y': 0.5,
       'vx': 0,
       'vy': 0,
-      'animationName': 'down'
+      'animationName': 'down',
+      'alpha': 1.0
     }
 
     // Server choose starting position
@@ -155,6 +156,13 @@ io.sockets.on('connection', function (socket) {
   socket.on('updateshape', function(update) {
     console.info('updating shape');
     socket.broadcast.emit(update);
+  });
+
+  socket.on('updatealpha', function(update){
+    update.id = socket.id;
+    clients[socket.id].alpha = update.alpha;
+    console.info('alpha of client ' + socket.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalpha', update);
   });
 
   // When client disconnect...

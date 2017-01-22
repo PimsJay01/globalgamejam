@@ -39,6 +39,9 @@ function(phaser, socket, res, player, blocks) {
     function collidePlayer(player, enemy) {
         enemy.kill();
         player.alpha = player.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = player.alpha;
+        socket.emit('updatealpha', dataToSend);
         if (player.alpha <= 0.5) {
           socket.emit('disconnect');
           game.state.start('gameover');
