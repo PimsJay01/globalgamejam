@@ -20,47 +20,53 @@ const game = {
 
 function makeShapes(){
   return {
+    0 : { 'id':0, 'blocks' : {
+      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
+      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+    }},
     1 : { 'id':1, 'blocks' : {
-      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
-      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-     }},
+      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
+      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+    }},
     2 : { 'id':2, 'blocks' : {
-      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
-      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-     }},
-    3 : { 'id':3, 'blocks' : {
-      1 : {'id':1, 'x':0.2, 'y':0.2, 'damage':0},
-      2 : {'id':2, 'x':0.2, 'y':0.3, 'damage':0},
-      3 : {'id':3, 'x':0.2, 'y':0.4, 'damage':0},
-      4 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
-     }}
+      0 : {'id':0, 'x':0.2, 'y':0.2, 'damage':0},
+      1 : {'id':1, 'x':0.2, 'y':0.3, 'damage':0},
+      2 : {'id':2, 'x':0.2, 'y':0.4, 'damage':0},
+      3 : {'id':3, 'x':0.2, 'y':0.5, 'damage':0}
+    }}
   };
 }
 
+function makeBlocks(){
+  return {
+    0 : {'id':0, 'x':18, 'y':18},
+    1 : {'id':1, 'x':18, 'y':22},
+    2 : {'id':2, 'x':22, 'y':18},
+    2 : {'id':2, 'x':22, 'y':22}
+  };
+}
+
+
+const waveInterval = 10;
+var nextWave = waveInterval;
+
 // list of clients
 var clients = {};
-var blocks = {
-  1 : {'id':1, 'x':0.2, 'y':0.2},
-  2 : {'id':2, 'x':0.7, 'y':0.5},
-  3 : {'id':3, 'x':0.7, 'y':0.7},
- };
+var blocks = makeBlocks();
 
- // list of shapes
- var shapes = makeShapes();
+// list of shapes
+var shapes = makeShapes();
 
 // reset the global datastructures, put the server in initial state
 function reset(){
   clients = {};
-  blocks = {
-    1 : {'id':1, 'x':0.2, 'y':0.2},
-    2 : {'id':2, 'x':0.7, 'y':0.5},
-    3 : {'id':3, 'x':0.7, 'y':0.7},
-   };
-   shapes = makeShapes();
+  blocks = makeBlocks();
+  shapes = makeShapes();
+  nextWave = waveInterval;
   console.log('Server reset');
 };
 
@@ -93,6 +99,7 @@ io.sockets.on('connection', function (socket) {
 
     // Add new client in object
     clients[socket.id] = {
+      //'socket': socket,
       'id': socket.id,
       'x': 0.5,
       'y': 0.5,
@@ -111,7 +118,7 @@ io.sockets.on('connection', function (socket) {
     console.log("Sending block list to client "+socket.id);
     socket.emit('blocklist', blocks);
 
-    socket.emit('shapelist', shapes);
+    // socket.emit('shapelist', shapes);
 
     console.log("Sending data of client "+socket.id+" to all other clients");
     Object.keys(clients).forEach(function(key) {
@@ -141,7 +148,7 @@ io.sockets.on('connection', function (socket) {
     blocks[update.id].x = update.x !== void 0 ? update.x : blocks[socket.id].x;
     blocks[update.id].y = update.y !== void 0 ? update.y : blocks[socket.id].y;
     console.info('Server received block data. x : ' + blocks[update.id].x +', y : '+blocks[update.id].y+', id : ' + blocks[update.id].id);
-    console.info('Broadcasting the block data. x : ' + blocks.x +', y : '+blocks.y+', id : ' + blocks.id);
+    console.info('Broadcasting the block data. x : ' + update.x +', y : '+update.y+', id : ' + update.id);
     // console.log("List of clients : "+Object.keys(clients));
     socket.broadcast.emit('broadcastblock', update);
   });
@@ -153,10 +160,33 @@ io.sockets.on('connection', function (socket) {
 
   // When client disconnect...
   socket.on('disconnect', function() {
+    console.info('client ' + socket.id + ' disconnected');
     delete clients[socket.id];
   });
 });
 
-server.listen(7777);
+setInterval(function(){
+  // io.sockets.emit('time', nextWave);
+  io.emit('time', nextWave);
+  console.info('Current time : ', nextWave);
+  nextWave--;
+  if(nextWave === -1){
+    //io.sockets.emit('wave');
+    var keys = Object.keys(clients);
+    if( keys.length > 0 ){
+        // io.sockets.emit('wave');
+        var clientId = Object.keys(clients)[0];
+        console.info('!!! sending wave to : ' + clientId + ' !!!');
+        // clients[clientId].socket.emit('wave');
+        // io.clients[clientId].send('wave');
+        // sockets.broadcast.to(clientId).emit('wave');
+        io.emit('wave', clientId);
+    } else {
+      console.info('No client connected, cannot send wave');
+    }
+    nextWave = waveInterval;
+  }
+}, 1000);
 
+server.listen(7777);
 console.info('server started');

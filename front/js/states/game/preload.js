@@ -1,15 +1,18 @@
-define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others', 'js/states/game/blocks'], function(phaser, res, player, others, blocks) {
+define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others', 'js/states/game/enemies', 'js/states/game/blocks'],
+function(phaser, res, player, others, enemies, blocks) {
 
     var game;
 
     return function() {
         game = phaser.getGame();
 
-        game.load.image('sprites.background', res.sprites.background);
+        // game.load.image('sprites.background', res.sprites.background);
+        game.stage.backgroundColor = "#B5F3E9";
 
         player.preload();
         others.preload();
         blocks.preload();
+        enemies.preload();
 
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 

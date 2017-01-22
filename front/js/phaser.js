@@ -6,7 +6,7 @@ define(['phaser'], function() {
         console.info('Properties', properties);
 
         // Init game with Phaser
-        game = new Phaser.Game(1000, 1000, Phaser.AUTO, '');
+        game = new Phaser.Game(properties.width * 32, properties.height * 32, Phaser.AUTO, '');
 
         console.info('Game', game);
         return game;

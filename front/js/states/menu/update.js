@@ -4,7 +4,5 @@ define(['js/phaser'], function(phaser) {
 
     return function() {
         game = phaser.getGame();
-
-        // ...
     }
 });
