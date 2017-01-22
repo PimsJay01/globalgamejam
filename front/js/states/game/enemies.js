@@ -13,14 +13,15 @@ function(phaser, socket, res, player, blocks) {
     function preload() {
         game = phaser.getGame();
 
-        game.load.spritesheet('enemies', res.sprites.enemies, 32, 32);
+        game.load.spritesheet('enemies', res.sprites.enemies, 128, 128);
     }
 
-    function create() {
+    socket.on('wave', function() {
+    //function create() {
         emitter = game.add.emitter(game.world.centerX, 32, 250);
 
         // emitter.makeParticles('enemies', [0, 1, 2, 3, 4, 5]);
-        emitter.makeParticles('enemies', 0, 100, true);
+        emitter.makeParticles('enemies', [0, 1, 2, 3, 4, 5, 6], 50, true);
 
         emitter.bounce.setTo(0.5, 0.5);
         emitter.minParticleSpeed.setTo(-400, -400);
