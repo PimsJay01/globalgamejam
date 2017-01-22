@@ -12,7 +12,7 @@ function(phaser, res, player, others, enemies, blocks) {
         game.load.audio('music2', [res.sounds.timeAwayOGG, res.sounds.timeAwayMP3]);
 
         // game.load.image('sprites.background', res.sprites.background);
-        game.stage.backgroundColor = "#B5F3E9";
+        game.stage.backgroundColor = "#D5F3E9";
 
         game.load.crossOrigin = 'anonymous';
         game.load.bitmapFont('text_font', 'https://raw.githubusercontent.com/photonstorm/phaser-examples/master/examples/assets/fonts/bitmapFonts/carrier_command.png', 'https://raw.githubusercontent.com/photonstorm/phaser-examples/master/examples/assets/fonts/bitmapFonts/carrier_command.xml');

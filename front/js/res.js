@@ -2,7 +2,8 @@ define(function() {
 
     var sprites = 'img/';
     var buttons = 'img/';
-    var sounds  = 'sound/'
+    var screens = 'img/';
+    var sounds  = 'sound/';
 
     return {
         'sprites': {
@@ -10,7 +11,7 @@ define(function() {
             'characters': sprites + 'characters.png',
             'enemies': sprites + 'enemies.png',
             'hero': sprites + 'bunny.png',
-            'block': sprites + 'bloc.png'
+            'block': sprites + 'bloc.png',
         },
         'buttons': {
             'play': buttons + 'play.png'
@@ -20,6 +21,9 @@ define(function() {
              'paidProgrammingOGG': sounds + 'PaidProgramming2.ogg',
              'timeAwayMP3': sounds + 'TimeAway.mp3',
              'timeAwayOGG': sounds + 'TimeAway.ogg'
+        },
+        'screens': {
+              'startMenu': screens + 'consensusMenu.png'
         }
     }
 });
