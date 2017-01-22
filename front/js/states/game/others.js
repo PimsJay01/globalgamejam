@@ -4,6 +4,17 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
     var others = {};
     var velocity = 0.15 * phaser.getGame().width;
 
+    socket.on('broadcastalpha', function(update) {
+      console.log('broadcast alpha : ', update);
+      if((game !== void 0) && (game.state.current === 'game')) {
+        others[update.id].alpha = update.alpha;
+        if(others[update.id].alpha <= 0.5){
+          others[update.id].kill();
+          delete clients[update.id];
+        }
+      }
+    });
+
     socket.on('broadcast', function(update) {
         if((game !== void 0) && (game.state.current === 'game')) {
 

@@ -53,6 +53,9 @@ function(phaser, socket, res, player, blocks) {
     function collidePlayer(player, enemy) {
         enemy.kill();
         player.alpha = player.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = player.alpha;
+        socket.emit('updatealpha', dataToSend);
         if (player.alpha <= 0.5) {
           socket.emit('disconnect');
           game.state.start('gameover');
@@ -64,9 +67,13 @@ function(phaser, socket, res, player, blocks) {
     function collideBlocks(block, enemy) {
         enemy.kill();
         block.alpha = block.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = block.alpha;
+        dataToSend.id = block.id;
+        socket.emit('updatealphablock', dataToSend);
         if (block.alpha <= 0.5)
           block.kill();
-        console.info('Block :', block);
+        // console.info('Block :', block);
         // block.velocity.setTo(0);
     }
 

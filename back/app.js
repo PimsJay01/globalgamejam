@@ -43,9 +43,10 @@ function makeShapes(){
 
 function makeBlocks(){
   return {
-    0 : {'id':0, 'x':0.2, 'y':0.2},
-    1 : {'id':1, 'x':0.7, 'y':0.5},
-    2 : {'id':2, 'x':0.7, 'y':0.7},
+    0 : {'id':0, 'x':18, 'y':18, 'alpha':1.0},
+    1 : {'id':1, 'x':18, 'y':22, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':18, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':22, 'alpha':1.0}
   };
 }
 
@@ -98,13 +99,14 @@ io.sockets.on('connection', function (socket) {
 
     // Add new client in object
     clients[socket.id] = {
-      'socket': socket,
+      //'socket': socket,
       'id': socket.id,
       'x': 0.5,
       'y': 0.5,
       'vx': 0,
       'vy': 0,
-      'animationName': 'down'
+      'animationName': 'down',
+      'alpha': 1.0
     }
 
     // Server choose starting position
@@ -117,7 +119,7 @@ io.sockets.on('connection', function (socket) {
     console.log("Sending block list to client "+socket.id);
     socket.emit('blocklist', blocks);
 
-    socket.emit('shapelist', shapes);
+    // socket.emit('shapelist', shapes);
 
     console.log("Sending data of client "+socket.id+" to all other clients");
     Object.keys(clients).forEach(function(key) {
@@ -157,6 +159,19 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit(update);
   });
 
+  socket.on('updatealpha', function(update){
+    update.id = socket.id;
+    clients[socket.id].alpha = update.alpha;
+    console.info('alpha of client ' + socket.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalpha', update);
+  });
+
+  socket.on('updatealphablock', function(update){
+    blocks[update.id].alpha = update.alpha;
+    console.info('alpha of block ' + update.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalphablock', update);
+  });
+
   // When client disconnect...
   socket.on('disconnect', function() {
     console.info('client ' + socket.id + ' disconnected');
@@ -165,7 +180,8 @@ io.sockets.on('connection', function (socket) {
 });
 
 setInterval(function(){
-  io.sockets.emit('time', nextWave);
+  // io.sockets.emit('time', nextWave);
+  io.emit('time', nextWave);
   console.info('Current time : ', nextWave);
   nextWave--;
   if(nextWave === -1){
@@ -175,8 +191,10 @@ setInterval(function(){
         // io.sockets.emit('wave');
         var clientId = Object.keys(clients)[0];
         console.info('!!! sending wave to : ' + clientId + ' !!!');
-        clients[clientId].socket.emit('wave');
+        // clients[clientId].socket.emit('wave');
         // io.clients[clientId].send('wave');
+        // sockets.broadcast.to(clientId).emit('wave');
+        io.emit('wave', clientId);
     } else {
       console.info('No client connected, cannot send wave');
     }
