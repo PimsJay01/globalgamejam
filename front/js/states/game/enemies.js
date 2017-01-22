@@ -2,6 +2,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player', 'js/states/
 function(phaser, socket, res, player, blocks) {
 
     var game;
+    var text;
     var emitter;
     var enemies = {};
     var velocity = 0.15 * phaser.getGame().width;
@@ -15,6 +16,18 @@ function(phaser, socket, res, player, blocks) {
 
         game.load.spritesheet('enemies', res.sprites.enemies, 32, 32);
     }
+
+    function create() {
+        game = phaser.getGame();
+
+        text = game.add.bitmapText(game.world.centerX, game.height - 50, 'text_font', "Next wave in :", 34);
+        text.anchor.setTo(0.5, 0.5);
+    }
+
+    socket.on('time', function(time) {
+        if (typeof(text) !== 'undefined')
+          text.text = "Next wave in : " + time;
+    });
 
     socket.on('wave', function() {
     //function create() {
@@ -40,6 +53,9 @@ function(phaser, socket, res, player, blocks) {
     function collidePlayer(player, enemy) {
         enemy.kill();
         player.alpha = player.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = player.alpha;
+        socket.emit('updatealpha', dataToSend);
         if (player.alpha <= 0.5) {
           socket.emit('disconnect');
           game.state.start('gameover');
@@ -51,13 +67,18 @@ function(phaser, socket, res, player, blocks) {
     function collideBlocks(block, enemy) {
         enemy.kill();
         block.alpha = block.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = block.alpha;
+        dataToSend.id = block.id;
+        socket.emit('updatealphablock', dataToSend);
         if (block.alpha <= 0.5)
           block.kill();
-        console.info('Block :', block);
+        // console.info('Block :', block);
         // block.velocity.setTo(0);
     }
 
     return {
+        'create': create,
         'preload': preload,
         'update': update
     }

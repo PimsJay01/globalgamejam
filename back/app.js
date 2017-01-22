@@ -43,15 +43,15 @@ function makeShapes(){
 
 function makeBlocks(){
   return {
-    0 : {'id':0, 'x':18, 'y':18},
-    1 : {'id':1, 'x':18, 'y':22},
-    2 : {'id':2, 'x':22, 'y':18},
-    2 : {'id':2, 'x':22, 'y':22}
+    0 : {'id':0, 'x':18, 'y':18, 'alpha':1.0},
+    1 : {'id':1, 'x':18, 'y':22, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':18, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':22, 'alpha':1.0}
   };
 }
 
 
-const waveInterval = 10;
+const waveInterval = 60;
 var nextWave = waveInterval;
 
 // list of clients
@@ -105,7 +105,8 @@ io.sockets.on('connection', function (socket) {
       'y': 0.5,
       'vx': 0,
       'vy': 0,
-      'animationName': 'down'
+      'animationName': 'down',
+      'alpha': 1.0
     }
 
     // Server choose starting position
@@ -156,6 +157,19 @@ io.sockets.on('connection', function (socket) {
   socket.on('updateshape', function(update) {
     console.info('updating shape');
     socket.broadcast.emit(update);
+  });
+
+  socket.on('updatealpha', function(update){
+    update.id = socket.id;
+    clients[socket.id].alpha = update.alpha;
+    console.info('alpha of client ' + socket.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalpha', update);
+  });
+
+  socket.on('updatealphablock', function(update){
+    blocks[update.id].alpha = update.alpha;
+    console.info('alpha of block ' + update.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalphablock', update);
   });
 
   // When client disconnect...
