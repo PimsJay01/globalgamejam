@@ -49,6 +49,10 @@ function makeBlocks(){
   };
 }
 
+
+const waveInterval = 30;
+var nextWave = waveInterval;
+
 // list of clients
 var clients = {};
 var blocks = makeBlocks();
@@ -61,6 +65,7 @@ function reset(){
   clients = {};
   blocks = makeBlocks();
   shapes = makeShapes();
+  nextWave = waveInterval;
   console.log('Server reset');
 };
 
@@ -157,6 +162,24 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-server.listen(7777);
+setInterval(function(){
+  io.sockets.emit('time', nextWave);
+  console.info('Current time : ', nextWave);
+  nextWave--;
+  if(nextWave === -1){
+    //io.sockets.emit('wave');
+    var keys = Object.keys(clients);
+    if( keys.length > 0 ){
+        // io.sockets.emit('wave');
+        var clientId = Object.keys(clients)[0];
+        console.info('!!! sending wave to : ' + clientId + ' !!!');
+        io.sockets.socket(clientId).emit('wave');
+    } else {
+      console.info('No client connected, cannot send wave');
+    }
+    nextWave = waveInterval;
+  }
+}, 1000);
 
+server.listen(7777);
 console.info('server started');
