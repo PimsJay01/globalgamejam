@@ -58,7 +58,6 @@ function(phaser, socket, res, player, blocks) {
     }
 
     return {
-        'create': create,
         'preload': preload,
         'update': update
     }

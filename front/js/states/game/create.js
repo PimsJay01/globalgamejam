@@ -8,6 +8,6 @@ define(['js/phaser', 'js/states/game/player', 'js/states/game/enemies'], functio
         // game.add.sprite(0, 0, 'sprites.background');
 
         player.create();
-        enemies.create();
+        //enemies.create();
     }
 });
