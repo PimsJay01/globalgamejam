@@ -26,7 +26,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
     game.load.image('block', res.sprites.block);
     console.log(res.sprites.block);
     for (var i in blocks) {
-      var tempBlock = game.add.sprite(blocks[i].x * phaser.getGame().width , blocks[i].y * phaser.getGame().height , 'block');
+      var tempBlock = game.add.sprite(blocks[i].x * 32, blocks[i].y * 32, 'block');
       tempBlock.id = blocks[i].id;
       // console.info('yo', tempBlock);
       // var tempBlockHolder = {'sprite' : tempBlock, 'id':blocks[i].id};
@@ -65,44 +65,58 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
   function update() {
 
-    game.physics.arcade.collide(player.getPlayer(), blockList, collidePlayer, null, this);
+    game.physics.arcade.overlap(player.getPlayer(), blockList, collidePlayer, null, this);
     game.physics.arcade.collide(blockList, blockList, collideBlocks, null, this);
 
     // game.physics.arcade.collide(player.getPlayer(), shape.children);
 
-    for (var i in blockList) {
-
-
-      var sendPosition = (blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0);
-
-      if (((blockList[i].position.x % 32 < 8) && (blockList[i].previousPosition.x % 32 > 24)) || ((blockList[i].position.x % 32 > 24) && (blockList[i].previousPosition.x % 32 < 8))) {
-        var nearestPos = Math.round(blockList[i].position.x / 32);
-        blockList[i].position.x = nearestPos * 32;
-        blockList[i].body.velocity.setTo(0);
-      }
-
-      if (((blockList[i].position.y % 32 < 8) && (blockList[i].previousPosition.y % 32 > 24)) || ((blockList[i].position.y % 32 > 24) && (blockList[i].previousPosition.y % 32 < 8))) {
-        var nearestPos = Math.round(blockList[i].position.y / 32);
-        blockList[i].position.y = nearestPos * 32;
-        blockList[i].body.velocity.setTo(0);
-      }
-
-      if(sendPosition){
-        var valuesToSend = {};
-        valuesToSend.id = blockList[i].id;
-        valuesToSend.x = blockList[i].x / phaser.getGame().width;
-        valuesToSend.y = blockList[i].y / phaser.getGame().width;
-        socket.emit('updateblock', valuesToSend);
-      }
-    }
+    // for (var i in blockList) {
+    //
+    //
+    //   var sendPosition = (blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0);
+    //
+    //   if (((blockList[i].position.x % 32 < 8) && (blockList[i].previousPosition.x % 32 > 24)) || ((blockList[i].position.x % 32 > 24) && (blockList[i].previousPosition.x % 32 < 8))) {
+    //     var nearestPos = Math.round(blockList[i].position.x / 32);
+    //     blockList[i].position.x = nearestPos * 32;
+    //     blockList[i].body.velocity.setTo(0);
+    //   }
+    //
+    //   if (((blockList[i].position.y % 32 < 8) && (blockList[i].previousPosition.y % 32 > 24)) || ((blockList[i].position.y % 32 > 24) && (blockList[i].previousPosition.y % 32 < 8))) {
+    //     var nearestPos = Math.round(blockList[i].position.y / 32);
+    //     blockList[i].position.y = nearestPos * 32;
+    //     blockList[i].body.velocity.setTo(0);
+    //   }
+    //
+    //   if(sendPosition){
+    //     var valuesToSend = {};
+    //     valuesToSend.id = blockList[i].id;
+    //     valuesToSend.x = blockList[i].x / 32;
+    //     valuesToSend.y = blockList[i].y / 32;
+    //     socket.emit('updateblock', valuesToSend);
+    //   }
+    // }
   }
 
   function collidePlayer(player, block) {
-    console.log('John pu le pipi');
-    console.log(block.body.position);
 
-    //   block.body.velocity.set(0);
-    //   block.body.position.set(0);
+      if(block.body.touching.down) {
+          block.position.set(block.position.floor().x, block.position.floor().y -32);
+      }
+      else if(block.body.touching.up) {
+          block.position.set(block.position.floor().x, block.position.floor().y +32);
+      }
+      else if(block.body.touching.left) {
+          block.position.set(block.position.floor().x +32, block.position.floor().y);
+      }
+      else if(block.body.touching.right) {
+          block.position.set(block.position.floor().x -32, block.position.floor().y);
+      }
+
+      socket.emit('updateblock', {
+          'id': block.id,
+          'x': block.x / 32,
+          'y': block.y / 32,
+      });
   }
 
   function collideBlocks(block1, block2) {
