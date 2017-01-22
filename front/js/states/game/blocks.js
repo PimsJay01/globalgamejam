@@ -1,14 +1,18 @@
 define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(phaser, socket, res, player) {
 
+
   var shape;
-  // var shapeBlocks = [];
 
-  blockList = [];
+
+
   var game;
-  function preload() {
-      game = phaser.getGame();
+  var blockList = [];
 
-      game.load.image('block', res.sprites.block);
+
+  function preload() {
+    game = phaser.getGame();
+
+    game.load.image('block', res.sprites.block);
   };
 
 
@@ -60,52 +64,61 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
   });
 
   function update() {
+
+    game.physics.arcade.collide(player.getPlayer(), blockList, collidePlayer, null, this);
+    game.physics.arcade.collide(blockList, blockList, collideBlocks, null, this);
+
+    // game.physics.arcade.collide(player.getPlayer(), shape.children);
+
     for (var i in blockList) {
 
-      game.physics.arcade.collide(player.getPlayer(), blockList[i]);
 
-    //  game.physics.arcade.collide(player.getPlayer(), b1);
-    //  game.physics.arcade.collide(player.getPlayer(), b2);
-    //  game.physics.arcade.collide(player.getPlayer(), b3);
-    //  game.physics.arcade.collide(player.getPlayer(), b4);
-      game.physics.arcade.collide(player.getPlayer(), shape.children);
+      var sendPosition = (blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0);
 
+      if (((blockList[i].position.x % 32 < 8) && (blockList[i].previousPosition.x % 32 > 24)) || ((blockList[i].position.x % 32 > 24) && (blockList[i].previousPosition.x % 32 < 8))) {
+        var nearestPos = Math.round(blockList[i].position.x / 32);
+        blockList[i].position.x = nearestPos * 32;
+        blockList[i].body.velocity.setTo(0);
+      }
 
+      if (((blockList[i].position.y % 32 < 8) && (blockList[i].previousPosition.y % 32 > 24)) || ((blockList[i].position.y % 32 > 24) && (blockList[i].previousPosition.y % 32 < 8))) {
+        var nearestPos = Math.round(blockList[i].position.y / 32);
+        blockList[i].position.y = nearestPos * 32;
+        blockList[i].body.velocity.setTo(0);
+      }
 
-      if(blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0){
-        // console.info('block x : ' + blockList[i].x + ' y : ' + blockList[i].y);
+      if(sendPosition){
         var valuesToSend = {};
         valuesToSend.id = blockList[i].id;
         valuesToSend.x = blockList[i].x / phaser.getGame().width;
         valuesToSend.y = blockList[i].y / phaser.getGame().width;
         socket.emit('updateblock', valuesToSend);
-
-        if(blockList[i].body.velocity.x != 0){
-
-        if ((Math.round(blockList[i].body.position.x) % 32 < 2))
-          blockList[i].body.velocity.setTo(0, 0);
-        }
-
-        if(blockList[i].body.velocity.y != 0){
-          if ( (Math.round(blockList[i].body.position.y) % 32 < 2))
-            blockList[i].body.velocity.setTo(0, 0);
-        }
-
-
       }
-
-      for (var j in blockList) {
-        game.physics.arcade.collide(blockList[j], blockList[i]);
-      }
-
-
-
     }
   }
 
+  function collidePlayer(player, block) {
+    console.log('John pu le pipi');
+    console.log(block.body.position);
+
+    //   block.body.velocity.set(0);
+    //   block.body.position.set(0);
+  }
+
+  function collideBlocks(block1, block2) {
+    block1.body.velocity.set(0);
+    //   block1.position.set(block1.previousPosition.floor().x, block1.previousPosition.floor().y);
+    block2.body.velocity.set(0);
+    //   block1.position.set(block2.previousPosition.floor().x, block2.previousPosition.floor().y);
+  }
+
+  function getBlocks() {
+    return blockList;
+  }
 
   return {
-      'preload': preload,
-      'update': update
+    'preload': preload,
+    'update': update,
+    'getBlocks': getBlocks
   }
 });

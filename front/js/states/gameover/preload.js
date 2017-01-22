@@ -5,7 +5,7 @@ define(['js/phaser', 'js/res'], function(phaser, res) {
     return function() {
         game = phaser.getGame();
 
-        game.stage.backgroundColor = '#B5F3E9';
+        game.stage.backgroundColor = '#000000';
 
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 

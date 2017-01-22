@@ -50,7 +50,7 @@ function makeBlocks(){
 }
 
 
-const waveInterval = 30;
+const waveInterval = 10;
 var nextWave = waveInterval;
 
 // list of clients
@@ -98,6 +98,7 @@ io.sockets.on('connection', function (socket) {
 
     // Add new client in object
     clients[socket.id] = {
+      'socket': socket,
       'id': socket.id,
       'x': 0.5,
       'y': 0.5,
@@ -158,6 +159,7 @@ io.sockets.on('connection', function (socket) {
 
   // When client disconnect...
   socket.on('disconnect', function() {
+    console.info('client ' + socket.id + ' disconnected');
     delete clients[socket.id];
   });
 });
@@ -173,7 +175,8 @@ setInterval(function(){
         // io.sockets.emit('wave');
         var clientId = Object.keys(clients)[0];
         console.info('!!! sending wave to : ' + clientId + ' !!!');
-        io.sockets.socket(clientId).emit('wave');
+        clients[clientId].socket.emit('wave');
+        // io.clients[clientId].send('wave');
     } else {
       console.info('No client connected, cannot send wave');
     }

@@ -1,4 +1,5 @@
-define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others', 'js/states/game/blocks'], function(phaser, res, player, others, blocks) {
+define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others', 'js/states/game/enemies', 'js/states/game/blocks'],
+function(phaser, res, player, others, enemies, blocks) {
 
     var game;
 
@@ -11,6 +12,7 @@ define(['js/phaser', 'js/res', 'js/states/game/player', 'js/states/game/others',
         player.preload();
         others.preload();
         blocks.preload();
+        enemies.preload();
 
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
