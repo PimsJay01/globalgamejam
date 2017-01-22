@@ -28,7 +28,7 @@ function(phaser, socket, res, player, blocks) {
         emitter.maxParticleSpeed.setTo(400, 400);
         //emitter.gravity = 50;
         emitter.start(false, 4000, 15);
-    }
+    });
 
     function update() {
         // game.physics.arcade.collide(emitter, player.getPlayer(), collidePlayer, null, this);
