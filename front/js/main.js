@@ -11,11 +11,12 @@ requirejs(['jquery', 'js/phaser'], function($, phaser) {
                 if(game === void 0) {
                     game = phaser.init(init);
 
-                    require(['js/states/menu', 'js/states/game'], function(menuState, gameState) {
+                    require(['js/states/menu', 'js/states/game', 'js/states/gameover'], function(menuState, gameState, gameoverState) {
 
                         // Declare game states
                         game.state.add('menu', menuState);
                         game.state.add('game', gameState);
+                        game.state.add('gameover', gameoverState);
 
                         // Start state
                         game.state.start('menu');
