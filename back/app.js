@@ -31,7 +31,35 @@ function makeBlocks(){
       8 : {'id':8, 'family':2, 'x':18, 'y':24, 'alpha':1.0},
       9 : {'id':9, 'family':2, 'x':19, 'y':24, 'alpha':1.0},
       10 : {'id':10, 'family':2, 'x':20, 'y':24, 'alpha':1.0},
-      11 : {'id':11, 'family':2, 'x':20, 'y':25, 'alpha':1.0}
+      11 : {'id':11, 'family':2, 'x':20, 'y':25, 'alpha':1.0},
+      12 : {'id':12, 'family':3, 'x':2, 'y':7, 'alpha':1.0},
+      13 : {'id':13, 'family':3, 'x':2, 'y':8, 'alpha':1.0},
+      14 : {'id':14, 'family':3, 'x':2, 'y':9, 'alpha':1.0},
+      15 : {'id':15, 'family':3, 'x':3, 'y':8, 'alpha':1.0},
+      16 : {'id':16, 'family':4, 'x':30, 'y':39, 'alpha':1.0},
+      17 : {'id':17, 'family':4, 'x':30, 'y':38, 'alpha':1.0},
+      18 : {'id':18, 'family':4, 'x':30, 'y':37, 'alpha':1.0},
+      19 : {'id':19, 'family':4, 'x':31, 'y':37, 'alpha':1.0},
+      20 : {'id':20, 'family':5, 'x':18, 'y':1, 'alpha':1.0},
+      21 : {'id':21, 'family':5, 'x':19, 'y':1, 'alpha':1.0},
+      22 : {'id':22, 'family':5, 'x':19, 'y':2, 'alpha':1.0},
+      23 : {'id':23, 'family':5, 'x':20, 'y':2, 'alpha':1.0},
+      24 : {'id':24, 'family':6, 'x':7, 'y':17, 'alpha':1.0},
+      25 : {'id':25, 'family':6, 'x':8, 'y':17, 'alpha':1.0},
+      26 : {'id':26, 'family':6, 'x':8, 'y':16, 'alpha':1.0},
+      27 : {'id':27, 'family':6, 'x':9, 'y':16, 'alpha':1.0},
+      28 : {'id':28, 'family':7, 'x':18, 'y':10, 'alpha':1.0},
+      29 : {'id':29, 'family':7, 'x':19, 'y':10, 'alpha':1.0},
+      30 : {'id':30, 'family':7, 'x':20, 'y':10, 'alpha':1.0},
+      31 : {'id':31, 'family':7, 'x':21, 'y':10, 'alpha':1.0},
+      32 : {'id':32, 'family':8, 'x':10, 'y':24, 'alpha':1.0},
+      33 : {'id':33, 'family':8, 'x':10, 'y':25, 'alpha':1.0},
+      34 : {'id':34, 'family':8, 'x':10, 'y':26, 'alpha':1.0},
+      35 : {'id':35, 'family':8, 'x':10, 'y':27, 'alpha':1.0},
+      36 : {'id':36, 'family':9, 'x':15, 'y':30, 'alpha':1.0},
+      37 : {'id':37, 'family':9, 'x':15, 'y':31, 'alpha':1.0},
+      38 : {'id':38, 'family':9, 'x':16, 'y':30, 'alpha':1.0},
+      39 : {'id':39, 'family':9, 'x':16, 'y':31, 'alpha':1.0}
   };
 }
 
@@ -45,7 +73,7 @@ function makeBlocks(){
 // }
 
 
-const waveInterval = 15;
+const waveInterval = 30;
 var nextWave = waveInterval;
 
 // list of clients

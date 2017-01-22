@@ -28,7 +28,7 @@ function(phaser, socket, res, player, blocks) {
         if (typeof(text) !== 'undefined')
           text.text = "Next wave in : " + time;
 
-          if((emitter !== void 0 ) && (time > 0)) {
+          if((emitter !== void 0 ) && (time < 25)) {
               emitter.on = false;
           }
     });
