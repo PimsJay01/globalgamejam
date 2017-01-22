@@ -15,6 +15,12 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
     game.load.image('block', res.sprites.block);
   };
 
+  socket.on('broadcastalphablock', function(block){
+    blockList[block.id].alpha = block.alpha;
+    if(blockList[block.id].alpha <= 0.5){
+      blockList[block.id].kill();
+    }
+  });
 
   socket.on('broadcastblock', function(block){
     blockList[block.id].x = block.x * 32;

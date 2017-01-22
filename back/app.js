@@ -43,10 +43,10 @@ function makeShapes(){
 
 function makeBlocks(){
   return {
-    0 : {'id':0, 'x':18, 'y':18},
-    1 : {'id':1, 'x':18, 'y':22},
-    2 : {'id':2, 'x':22, 'y':18},
-    2 : {'id':2, 'x':22, 'y':22}
+    0 : {'id':0, 'x':18, 'y':18, 'alpha':1.0},
+    1 : {'id':1, 'x':18, 'y':22, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':18, 'alpha':1.0},
+    2 : {'id':2, 'x':22, 'y':22, 'alpha':1.0}
   };
 }
 
@@ -164,6 +164,12 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id].alpha = update.alpha;
     console.info('alpha of client ' + socket.id + ' updated to '+ update.alpha);
     socket.broadcast.emit('broadcastalpha', update);
+  });
+
+  socket.on('updatealphablock', function(update){
+    blocks[update.id].alpha = update.alpha;
+    console.info('alpha of block ' + update.id + ' updated to '+ update.alpha);
+    socket.broadcast.emit('broadcastalphablock', update);
   });
 
   // When client disconnect...

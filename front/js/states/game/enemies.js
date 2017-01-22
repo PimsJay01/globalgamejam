@@ -54,9 +54,13 @@ function(phaser, socket, res, player, blocks) {
     function collideBlocks(block, enemy) {
         enemy.kill();
         block.alpha = block.alpha - 0.11;
+        var dataToSend = {};
+        dataToSend.alpha = block.alpha;
+        dataToSend.id = block.id;
+        socket.emit('updatealphablock', dataToSend);
         if (block.alpha <= 0.5)
           block.kill();
-        console.info('Block :', block);
+        // console.info('Block :', block);
         // block.velocity.setTo(0);
     }
 
