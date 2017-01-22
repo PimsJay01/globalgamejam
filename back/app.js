@@ -51,7 +51,7 @@ function makeBlocks(){
 }
 
 
-const waveInterval = 10;
+const waveInterval = 60;
 var nextWave = waveInterval;
 
 // list of clients
