@@ -2,6 +2,7 @@ define(function() {
 
     var sprites = 'img/';
     var buttons = 'img/';
+    var sounds  = 'sound/'
 
     return {
         'sprites': {
@@ -13,6 +14,10 @@ define(function() {
         },
         'buttons': {
             'play': buttons + 'play.png'
+        },
+        'sounds': {
+             'paidProgrammming': sounds + 'PaidProgrammming2.mp3',
+             'timeAway': sounds + 'TimeAway.mp3',
         }
     }
 });

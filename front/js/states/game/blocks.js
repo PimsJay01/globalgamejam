@@ -24,16 +24,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
   socket.on('blocklist', function(blocks) {
 
     game.load.image('block', res.sprites.block);
+    console.log(res.sprites.block);
     for (var i in blocks) {
-
-      blockList[blocks[i].id] =  game.add.sprite(blocks[i].x * phaser.getGame().width , blocks[i].y * phaser.getGame().height , 'block');
-    }
-
-    modalmessage.showModal();
-
-
-      var tempBlock = game.add.sprite(blocks[i].x * phaser.getGame().width , blocks[i].y * phaser.getGame().height , 'block');
-
       var tempBlock = game.add.sprite(blocks[i].x * 32, blocks[i].y * 32, 'block');
       tempBlock.id = blocks[i].id;
       // console.info('yo', tempBlock);

@@ -6,6 +6,10 @@ function(phaser, res, player, others, enemies, blocks) {
     return function() {
         game = phaser.getGame();
 
+
+
+        game.load.audio('intro', res.sounds.paidProgrammming);
+
         // game.load.image('sprites.background', res.sprites.background);
         game.stage.backgroundColor = "#B5F3E9";
 
