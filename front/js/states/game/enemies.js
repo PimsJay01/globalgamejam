@@ -13,7 +13,7 @@ function(phaser, socket, res, player, blocks) {
     function preload() {
         game = phaser.getGame();
 
-        game.load.spritesheet('enemies', res.sprites.enemies, 128, 128);
+        game.load.spritesheet('enemies', res.sprites.enemies, 32, 32);
     }
 
     socket.on('wave', function() {
