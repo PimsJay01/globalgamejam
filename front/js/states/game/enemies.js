@@ -41,6 +41,7 @@ function(phaser, socket, res, player, blocks) {
         enemy.kill();
         player.alpha = player.alpha - 0.11;
         if (player.alpha <= 0.5) {
+          socket.emit('disconnect');
           game.state.start('gameover');
         }
 
