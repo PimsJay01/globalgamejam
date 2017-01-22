@@ -17,7 +17,7 @@ function(phaser, socket, res, player, blocks) {
     }
 
     function create() {
-        emitter = game.add.emitter(game.world.centerX, game.world.centerY, 250);
+        emitter = game.add.emitter(game.world.centerX, 32, 250);
 
         // emitter.makeParticles('enemies', [0, 1, 2, 3, 4, 5]);
         emitter.makeParticles('enemies', 0, 100, true);
@@ -25,23 +25,33 @@ function(phaser, socket, res, player, blocks) {
         emitter.bounce.setTo(0.5, 0.5);
         emitter.minParticleSpeed.setTo(-400, -400);
         emitter.maxParticleSpeed.setTo(400, 400);
-        emitter.gravity = 50;
-        // emitter.start(false, 4000, 15);
+        //emitter.gravity = 50;
+        emitter.start(false, 4000, 15);
     }
 
     function update() {
-        game.physics.arcade.collide(emitter, player.getPlayer(), collidePlayer, null, this);
-        game.physics.arcade.collide(emitter, blocks.getBlocks(), collideBlocks, null, this);
+        // game.physics.arcade.collide(emitter, player.getPlayer(), collidePlayer, null, this);
+        // game.physics.arcade.collide(emitter, blocks.getBlocks(), collideBlocks, null, this);
+        game.physics.arcade.overlap(emitter, player.getPlayer(), collidePlayer, null, this);
+        game.physics.arcade.overlap(emitter, blocks.getBlocks(), collideBlocks, null, this);
     }
 
     function collidePlayer(player, enemy) {
-        // console.info('John est super gay', enemy);
+        enemy.kill();
+        player.alpha = player.alpha - 0.11;
+        if (player.alpha <= 0.5) {
+          game.state.start('gameover');
+        }
+
         // enemy.visible = false;
     }
 
     function collideBlocks(block, enemy) {
-        console.log('enemy', enemy);
-        console.log('block', block);
+        enemy.kill();
+        block.alpha = block.alpha - 0.11;
+        if (block.alpha <= 0.5)
+          block.kill();
+        console.info('Block :', block);
         // block.velocity.setTo(0);
     }
 
