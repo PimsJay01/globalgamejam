@@ -2,6 +2,7 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player', 'js/states/
 function(phaser, socket, res, player, blocks) {
 
     var game;
+    var text;
     var emitter;
     var enemies = {};
     var velocity = 0.15 * phaser.getGame().width;
@@ -15,6 +16,18 @@ function(phaser, socket, res, player, blocks) {
 
         game.load.spritesheet('enemies', res.sprites.enemies, 32, 32);
     }
+
+    function create() {
+        game = phaser.getGame();
+
+        var style = { font: "20px Verdana", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        text = game.add.bitmapText(500, 950, 'text_font', "Next wave in :", 34);
+        text.anchor.setTo(0.5, 0.5);
+    }
+
+    socket.on('time', function(time) {
+        text.text = "Next wave in : " + time;
+    });
 
     socket.on('wave', function() {
     //function create() {
@@ -58,6 +71,7 @@ function(phaser, socket, res, player, blocks) {
     }
 
     return {
+        'create': create,
         'preload': preload,
         'update': update
     }
