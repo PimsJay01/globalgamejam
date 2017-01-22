@@ -42,6 +42,8 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
 
     for (var i in blockList) {
 
+        var sendPosition = (blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0);
+
         if (((blockList[i].position.x % 32 < 8) && (blockList[i].previousPosition.x % 32 > 24)) || ((blockList[i].position.x % 32 > 24) && (blockList[i].previousPosition.x % 32 < 8))) {
             var nearestPos = Math.round(blockList[i].position.x / 32);
             blockList[i].position.x = nearestPos * 32;
@@ -54,13 +56,13 @@ define(['js/phaser', 'js/socket', 'js/res', 'js/states/game/player'], function(p
             blockList[i].body.velocity.setTo(0);
         }
 
-            //   if(blockList[i].body.velocity.x != 0 || blockList[i].body.velocity.y != 0){
+        if(sendPosition){
             var valuesToSend = {};
             valuesToSend.id = blockList[i].id;
             valuesToSend.x = blockList[i].x / phaser.getGame().width;
             valuesToSend.y = blockList[i].y / phaser.getGame().width;
             socket.emit('updateblock', valuesToSend);
-            // }
+        }
     }
   }
 
