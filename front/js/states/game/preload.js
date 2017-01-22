@@ -8,7 +8,8 @@ function(phaser, res, player, others, enemies, blocks) {
 
 
 
-        game.load.audio('intro', res.sounds.paidProgrammming);
+        game.load.audio('music1', [res.sounds.paidProgrammingOGG, res.sounds.paidProgrammingMP3]);
+        game.load.audio('music2', [res.sounds.timeAwayOGG, res.sounds.timeAwayMP3]);
 
         // game.load.image('sprites.background', res.sprites.background);
         game.stage.backgroundColor = "#B5F3E9";

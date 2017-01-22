@@ -16,8 +16,10 @@ define(function() {
             'play': buttons + 'play.png'
         },
         'sounds': {
-             'paidProgrammming': sounds + 'PaidProgrammming2.mp3',
-             'timeAway': sounds + 'TimeAway.mp3',
+             'paidProgrammingMP3': sounds + 'PaidProgramming2.mp3',
+             'paidProgrammingOGG': sounds + 'PaidProgramming2.ogg',
+             'timeAwayMP3': sounds + 'TimeAway.mp3',
+             'timeAwayOGG': sounds + 'TimeAway.ogg'
         }
     }
 });

@@ -7,9 +7,11 @@ define(['js/phaser', 'js/states/game/player', 'js/states/game/enemies'], functio
 
         // game.add.sprite(0, 0, 'sprites.background');
 
-        music = game.add.audio('intro');
-        music.play();
+
         player.create();
+        music = game.add.audio('music2');
+        //music.loop(true);
+        music.play();
         //enemies.create();
     }
 });
